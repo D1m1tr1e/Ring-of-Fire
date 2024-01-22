@@ -1,4 +1,4 @@
-.field{
+.field {
     width: 100dvw;
     height: 100dvh;
     background-image: url('./../../assets/img/board.jpg');
@@ -8,23 +8,45 @@
     align-items: center;
 }
 
-.card-stack{
+.card-stack {
     position: relative;
-    >img{
+
+    >img {
         position: absolute;
         width: 120px;
     }
 }
 
-.top-card{
+.top-card {
     cursor: pointer;
     transition: all 125ms ease-in-out;
-    &:hover{
+
+    &:hover {
         transform: scale(1.1) translateY(-10px);
     }
 }
 
-.pick-card{
-    transition: all 125ms ease-in-out;
-    transform: scale(1.5) !important;
+.pick-card {
+    animation: pick-card-animation 1.5s ease-in-out;
+    transform: scale(1.0) translateX(120px) translateY(-220px) rotate(-15deg);
+
+}
+
+@keyframes pick-card-animation {
+    0% {
+        transform: scale(1);
+    }
+
+    40% {
+        transform: scale(1.6);
+    }
+
+    50% {
+        transform: scale(1.6);
+    }
+
+
+    100% {
+        transform: scale(1.0) translateX(120px) translateY(-220px) rotate(-15deg);
+    }
 }
