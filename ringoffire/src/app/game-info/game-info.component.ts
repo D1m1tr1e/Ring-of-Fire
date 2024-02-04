@@ -24,10 +24,6 @@ export class GameInfoComponent implements OnChanges {
       let cardNumber = + this.card.split('_')[1];
       this.cardTitle = this.cardAction[cardNumber - 1].title;
       this.cardDecription = this.cardAction[cardNumber - 1].description;
-
-    } else {
-      console.log('Es wurde noch keine Karte gezogen');
-      this.cardTitle = ('Ziehe die erste Karte, um die Tirnkaufgaben anzuziegen!');
     }
   }
 

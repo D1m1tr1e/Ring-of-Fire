@@ -1,10 +1,10 @@
 <mat-card>
     <mat-card-title>
-        {{ cardTitle }}
+        {{ card ? cardTitle: 'Ziehe die erste Karte, um die Tirnkaufgaben anzuziegen!' }}
     </mat-card-title>
 
 
     <mat-card-content>
-    {{ cardDecription }}
+        {{ card ? cardDecription : 'Aufgabenstellung wird angeziegt, wenn die erste Karte gezogen wurde!' }}
     </mat-card-content>
 </mat-card>
