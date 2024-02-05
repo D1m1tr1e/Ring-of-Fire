@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
 import { GameInfoComponent } from '../game-info/game-info.component';
-import { setThrowInvalidWriteToSignalError } from '@angular/core/primitives/signals';
+
 
 
 @Component({
@@ -86,9 +86,10 @@ export class GameComponent {
     });
 
     dialogRef.afterClosed().subscribe((name: string) => {
-      console.log('The dialog was closed', name);
-      this.game.players.push(name);
+      if (name && name.length > 0) {
+        console.log('The dialog was closed', name);
+        this.game.players.push(name);
+      }
     });
   }
-
 }
