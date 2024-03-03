@@ -4,8 +4,6 @@ export class Game {
     public playedCards: string[] = [];
     public currentPlayer: number = 0;
 
-
-    
     public toJson() {
         return {
             players: this.players,
