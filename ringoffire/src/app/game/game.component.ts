@@ -8,9 +8,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
 import { GameInfoComponent } from '../game-info/game-info.component';
 import { addDoc, collection } from '@firebase/firestore';
-import { collectionData, Firestore } from '@angular/fire/firestore';
+import { collectionData, Firestore, onSnapshot, doc } from '@angular/fire/firestore';
 import { elementAt } from 'rxjs';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-game',
@@ -23,8 +24,9 @@ import { Title } from '@angular/platform-browser';
 
 export class GameComponent {
 
-  constructor(public dialog: MatDialog) {
+  constructor(private route: ActivatedRoute, public dialog: MatDialog) {
     this.newGame();
+    this.addNewGameNote();
 
     this.items$ = collectionData(this.getGameColRef())
     this.item = this.items$.subscribe((list) => {
@@ -39,15 +41,30 @@ export class GameComponent {
   items$;
   item;
   pickCardAnimation = false;
-  game: Game = {
-    players: ["Text"],
-    stack: ["Text"],
-    playedCards: ["Text"],
-    currentPlayer: 0,
-  }
+  game: Game = new Game();
   currentCard: string = '';
+  gameId!: string;
 
   //***************************/
+
+  ngOnInit(): void {
+    this.route.params.subscribe((params) => {
+      this.gameId = params['id'];
+      console.log('zeige mir die Game ID an', this.gameId);
+      this.loadingDataFromSubCol();
+    });
+  }
+
+  loadingDataFromSubCol() {
+    onSnapshot(doc(this.getGameColRef(), this.gameId), (doc) => {
+      let currentGame: any = doc.data(); // Daten aus dem aktuellen Spiel das gerade offen ist
+      this.game.players = currentGame.players;
+      this.game.stack = currentGame.stack;
+      this.game.playedCards = currentGame.playedCards;
+      this.game.currentPlayer = currentGame.currentPlayer;
+    });
+  };
+
 
   getGameColRef() {
     return collection(this.firestore, 'games');
@@ -59,7 +76,7 @@ export class GameComponent {
 
   newGame() {
     this.game = new Game();
-    this.addNewGameNote();
+
 
     console.log(this.game);
     for (let i = 1; i < 14; i++) {
