@@ -27,19 +27,10 @@ export class GameComponent {
   constructor(private route: ActivatedRoute, public dialog: MatDialog) {
     this.newGame();
     this.addNewGameNote();
-
-    this.items$ = collectionData(this.getGameColRef())
-    this.item = this.items$.subscribe((list) => {
-      list.forEach(element => {
-        console.log('Meine Inhalte der Datenbank', element)
-      });
-    });
   }
   //************VARIABLEN***************/
 
   firestore: Firestore = inject(Firestore);
-  items$;
-  item;
   pickCardAnimation = false;
   game: Game = new Game();
   currentCard: string = '';
@@ -50,12 +41,24 @@ export class GameComponent {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.gameId = params['id'];
-      console.log('zeige mir die Game ID an', this.gameId);
-      this.loadingDataFromSubCol();
+      console.log('zeige mir die Game ID aus Game.Component', this.gameId);
+      this.loadingUpdatedDataFromSubCol();
+    });
+    this.collectDataFromServer();
+  }
+
+  // Lädt all Daten, dich sich auf der Datebank befinden
+  collectDataFromServer() {
+    let col = collectionData(this.getGameColRef())
+    col.subscribe((list) => {
+      list.forEach(element => {
+        //console.log('Meine Inhalte der Datenbank', element)
+      });
     });
   }
 
-  loadingDataFromSubCol() {
+  //Lädt aktualliserte Daten vom Serven (z.B. wenn ein neuer Spieler manuell hinzugefügt worden ist)
+  loadingUpdatedDataFromSubCol() {
     onSnapshot(doc(this.getGameColRef(), this.gameId), (doc) => {
       let currentGame: any = doc.data(); // Daten aus dem aktuellen Spiel das gerade offen ist
       this.game.players = currentGame.players;
@@ -70,9 +73,11 @@ export class GameComponent {
     return collection(this.firestore, 'games');
   }
 
+
   async addNewGameNote() {
     await addDoc(this.getGameColRef(), this.game.toJson())
   }
+
 
   newGame() {
     this.game = new Game();
