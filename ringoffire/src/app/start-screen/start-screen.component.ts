@@ -21,9 +21,14 @@ export class StartScreenComponent {
   constructor(private router: Router) {
   }
 
-  async newGame() {
+  newGame(){
     this.game = new Game();
-    await addDoc(this.getGameColRef(), this.game.toJson()).then((gameInfo: any) => {
+    this.routeToGameID();
+  }
+
+  async routeToGameID() {
+    await addDoc(this.getGameColRef(), this.game.toJson())
+    .then((gameInfo: any) => {
       this.router.navigateByUrl('/game/' + gameInfo.id);
       console.log('Zeige mir die Game ID aus Start Sceen', gameInfo.id);
       console.log('Zeige mir die GameInfo');

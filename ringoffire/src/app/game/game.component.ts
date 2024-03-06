@@ -24,10 +24,8 @@ import { ActivatedRoute } from '@angular/router';
 
 export class GameComponent {
 
-  constructor(private route: ActivatedRoute, public dialog: MatDialog) {
-    this.newGame();
-    this.addNewGameNote();
-  }
+  constructor(private route: ActivatedRoute, public dialog: MatDialog) {  }
+
   //************VARIABLEN***************/
 
   firestore: Firestore = inject(Firestore);
@@ -39,12 +37,15 @@ export class GameComponent {
   //***************************/
 
   ngOnInit(): void {
+    this.newGame();
+    this.addNewGameNote()
     this.route.params.subscribe((params) => {
       this.gameId = params['id'];
       console.log('zeige mir die Game ID aus Game.Component', this.gameId);
       this.loadingUpdatedDataFromSubCol();
     });
     this.collectDataFromServer();
+ 
   }
 
   // Lädt all Daten, dich sich auf der Datebank befinden
@@ -73,7 +74,7 @@ export class GameComponent {
     return collection(this.firestore, 'games');
   }
 
-
+//wandelt meine daten in einen Json um um packt es auf den Server
   async addNewGameNote() {
     await addDoc(this.getGameColRef(), this.game.toJson())
   }
