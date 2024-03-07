@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
 import { GameInfoComponent } from '../game-info/game-info.component';
 import { addDoc, collection } from '@firebase/firestore';
-import { collectionData, Firestore, onSnapshot, doc } from '@angular/fire/firestore';
+import { collectionData, Firestore, onSnapshot, doc, updateDoc } from '@angular/fire/firestore';
 import { elementAt } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -29,9 +29,7 @@ export class GameComponent {
   //************VARIABLEN***************/
 
   firestore: Firestore = inject(Firestore);
-  pickCardAnimation = false;
   game: Game = new Game();
-  currentCard: string = '';
   gameId!: string;
 
   //***************************/
@@ -39,6 +37,7 @@ export class GameComponent {
   ngOnInit(): void {
     this.newGame();
     this.addNewGameNote()
+    
     this.route.params.subscribe((params) => {
       this.gameId = params['id'];
       console.log('zeige mir die Game ID aus Game.Component', this.gameId);
@@ -66,12 +65,23 @@ export class GameComponent {
       this.game.stack = currentGame.stack;
       this.game.playedCards = currentGame.playedCards;
       this.game.currentPlayer = currentGame.currentPlayer;
+      this.game.currentCard = currentGame.currentCard;
+      this.game.pickCardAnimation = currentGame.pickCardAnimation;
     });
   };
 
 
+  async saveGame(){
+  let docRef = this.getSingleDocRef(this.gameId);
+  await updateDoc(docRef, this.game.toJson());
+  }
+
   getGameColRef() {
     return collection(this.firestore, 'games');
+  }
+
+  getSingleDocRef(docId: string) {
+    return doc(this.firestore, 'games', docId);    
   }
 
   //wandelt meine daten in einen Json um um packt es auf den Server
@@ -87,15 +97,17 @@ export class GameComponent {
   nextPlayer: number = 0;
 
   takeCard() {
-    if (!this.pickCardAnimation) {
-      this.currentCard = this.game.stack.pop() as string;
-      this.pickCardAnimation = true;
+    if (!this.game.pickCardAnimation) {
+      this.game.currentCard = this.game.stack.pop() as string;
+      this.game.pickCardAnimation = true;
       this.game.currentPlayer++;
       this.game.currentPlayer = this.game.currentPlayer % this.game.players.length;
-
+      this.saveGame();
+      
       setTimeout(() => {
-        this.game.playedCards.push(this.currentCard);
-        this.pickCardAnimation = false;
+        this.game.playedCards.push(this.game.currentCard);
+        this.game.pickCardAnimation = false;
+        this.saveGame();
       }, 1500);
     }
   }
@@ -108,6 +120,7 @@ export class GameComponent {
       if (name && name.length > 0) {
         console.log('The dialog was closed', name);
         this.game.players.push(name);
+        this.saveGame();
       }
     });
   }
