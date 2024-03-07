@@ -24,7 +24,7 @@ import { ActivatedRoute } from '@angular/router';
 
 export class GameComponent {
 
-  constructor(private route: ActivatedRoute, public dialog: MatDialog) {  }
+  constructor(private route: ActivatedRoute, public dialog: MatDialog) { }
 
   //************VARIABLEN***************/
 
@@ -45,7 +45,7 @@ export class GameComponent {
       this.loadingUpdatedDataFromSubCol();
     });
     this.collectDataFromServer();
- 
+
   }
 
   // Lädt all Daten, dich sich auf der Datebank befinden
@@ -74,7 +74,7 @@ export class GameComponent {
     return collection(this.firestore, 'games');
   }
 
-//wandelt meine daten in einen Json um um packt es auf den Server
+  //wandelt meine daten in einen Json um um packt es auf den Server
   async addNewGameNote() {
     await addDoc(this.getGameColRef(), this.game.toJson())
   }
@@ -82,31 +82,6 @@ export class GameComponent {
 
   newGame() {
     this.game = new Game();
-
-
-    console.log(this.game);
-    for (let i = 1; i < 14; i++) {
-      this.game.stack.push('spade_' + i);
-      this.game.stack.push('hearts_' + i);
-      this.game.stack.push('clubs_' + i);
-      this.game.stack.push('diamonds_' + i);
-    }
-    this.shuffle(this.game.stack);
-  }
-
-
-  shuffle(array: string[]) {
-    let currentIndex = array.length, randomIndex;
-
-    while (currentIndex > 0) {
-
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
-    }
-    return array;
   }
 
   nextPlayer: number = 0;

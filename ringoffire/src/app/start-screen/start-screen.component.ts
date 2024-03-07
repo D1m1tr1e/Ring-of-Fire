@@ -21,31 +21,19 @@ export class StartScreenComponent {
   constructor(private router: Router) {
   }
 
-  newGame(){
+  newGame() {
     this.game = new Game();
     this.routeToGameID();
   }
 
   async routeToGameID() {
     await addDoc(this.getGameColRef(), this.game.toJson())
-    .then((gameInfo: any) => {
-      this.router.navigateByUrl('/game/' + gameInfo.id);
-      console.log('Zeige mir die Game ID aus Start Sceen', gameInfo.id);
-      console.log('Zeige mir die GameInfo');
-    });
+      .then((gameInfo: any) => {
+        this.router.navigateByUrl('/game/' + gameInfo.id);
+        console.log('Zeige mir die Game ID aus Start Sceen', gameInfo.id);
+        console.log('Zeige mir die GameInfo');
+      });
   }
-
-  /*async newGame() {
-    this.game = new Game();
-    try {
-      const gameInfo = await addDoc(this.getGameColRef(), this.game.toJson());
-      this.router.navigateByUrl('/game/' + gameInfo.id);
-      console.log('Zeige mir die Game ID', gameInfo.id);
-      console.log('Zeige mir die GameInfo');
-    } catch (error) {
-      console.error('Fehler beim Hinzufügen des Spiels:', error);
-    }
-  }*/
 
   getGameColRef() {
     return collection(this.firestore, 'games');
