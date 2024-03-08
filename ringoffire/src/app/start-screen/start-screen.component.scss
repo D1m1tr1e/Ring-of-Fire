@@ -10,6 +10,10 @@
     >img {
         height: 100dvh;
     }
+
+    @media (max-width: 960px) {
+        overflow: hidden;
+    }
 }
 
 .start-label-box {
@@ -20,12 +24,16 @@
     display: flex;
     justify-content: center;
     cursor: pointer;
+    >img{
+        @media (max-width: 960px) {
+            width: 400px;
+        }
+    }
 
     >a {
         >img {
             width: 30dvw;
             height: auto;
-
             &:hover {
                 filter: brightness(1.1);
             }
